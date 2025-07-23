@@ -1,16 +1,16 @@
-// src/context/ThemeContext.tsx
 import React, { createContext, useContext, useState } from "react";
 
 type ThemeMode = "light" | "dark";
 
-const ThemeContext = createContext<{
+interface ThemeContextType {
   mode: ThemeMode;
   toggleTheme: () => void;
-}>({
-  mode: "light",
-  toggleTheme: () => {},
-});
+}
 
+// Create context with undefined default to enforce proper usage
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+// Provider component
 export const ThemeProviderContext: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [mode, setMode] = useState<ThemeMode>("light");
 
@@ -25,4 +25,11 @@ export const ThemeProviderContext: React.FC<{ children: React.ReactNode }> = ({ 
   );
 };
 
-export const useThemeMode = () => useContext(ThemeContext);
+// Custom hook
+export const useThemeMode = (): ThemeContextType => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("useThemeMode must be used within a ThemeProviderContext");
+  }
+  return context;
+};

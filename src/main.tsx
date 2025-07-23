@@ -10,15 +10,23 @@ import { ThemeProviderContext, useThemeMode } from "./ThemeContext";
 import { store } from "./store";
 import { getTheme } from "./theme";
 
-// This wrapper uses the theme mode from context
-const AppWithTheme = () => {
+const rootElement = document.getElementById("root");
+if (!rootElement) throw new Error("Root element not found");
+
+const root = createRoot(rootElement);
+
+// ✅ Move AppWithTheme inside the tree
+const InnerApp = () => {
   const { mode } = useThemeMode();
   const theme = getTheme(mode);
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <SnackbarProvider anchorOrigin={{ horizontal: 'right', vertical: 'top' }} autoHideDuration={1500}>
+      <SnackbarProvider
+        anchorOrigin={{ horizontal: "right", vertical: "top" }}
+        autoHideDuration={1500}
+      >
         <App />
         <SnackbarUtilsConfigurator />
       </SnackbarProvider>
@@ -26,16 +34,11 @@ const AppWithTheme = () => {
   );
 };
 
-const rootElement = document.getElementById("root");
-if (!rootElement) throw new Error("Root element not found");
-
-const root = createRoot(rootElement);
-
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeProviderContext>
-        <AppWithTheme />
+        <InnerApp />
       </ThemeProviderContext>
     </Provider>
   </React.StrictMode>
