@@ -15,7 +15,6 @@ if (!rootElement) throw new Error("Root element not found");
 
 const root = createRoot(rootElement);
 
-// ✅ Move AppWithTheme inside the tree
 const InnerApp = () => {
   const { mode } = useThemeMode();
   const theme = getTheme(mode);
